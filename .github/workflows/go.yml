@@ -28,6 +28,9 @@ jobs:
       - name: Integration Test
         run: make integration
 
+      - name: Acceptance Test
+        run: make acceptance
+
   Docker:
     runs-on: ubuntu-latest
     needs: Build
