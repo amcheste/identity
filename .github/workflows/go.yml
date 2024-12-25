@@ -4,7 +4,6 @@ on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -21,4 +20,7 @@ jobs:
         run: go version
 
       - name: Build
-        run: CGO_ENABLED=0 GOOS=linux go build -o main cmd/api/main.go
+        run: make build
+
+      - name: Unit Test
+        run: make unit

@@ -6,7 +6,7 @@ LABEL   = $(shell git rev-parse --abbrev-ref HEAD)
 all: build test
 
 build:
-	go build -o identity cmd/api/main.go
+	CGO_ENABLED=0 GOOS=linux go build -o main cmd/api/main.go
 
 run:
 	go run cmd/api/main.go
