@@ -1,7 +1,7 @@
 PROGRAM = identity
 LABEL   = $(shell git rev-parse --abbrev-ref HEAD)
 
-.PHONY: build test
+.PHONY: build test unit-test integration-test
 
 all: build test
 
@@ -20,9 +20,15 @@ logs:
 stop:
 	 docker compose down --volumes
 
-test:
+unit-test:
 	go test -cover github.com/camphotos/identity/pkg/models
 	go test -cover github.com/camphotos/identity/pkg/repository
+	go test -cover github.com/camphotos/identity/pkg/handlers
+
+integration-test:
+	go test github.com/camphotos/identity/integration
+
+test: unit-test integration-test
 
 
 

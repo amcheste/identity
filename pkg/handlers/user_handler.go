@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func GetUsers(w http.ResponseWriter, r *http.Request, repo *repository.UserRepository) {
+func GetUsers(w http.ResponseWriter, r *http.Request, repo repository.UserRepository) {
 
 	users, err := repo.GetAllUsers()
 	if err != nil {

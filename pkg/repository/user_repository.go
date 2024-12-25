@@ -2,20 +2,28 @@ package repository
 
 import (
 	"database/sql"
-	"github.com/google/uuid"
 
+	"github.com/google/uuid"
 	"github.com/camphotos/identity/pkg/models"
 )
 
-type UserRepository struct {
+// UserRepository defines the interface for user repository operations
+type UserRepository interface {
+	GetAllUsers() ([]models.User, error)
+}
+
+// UserRepositoryImpl is a concrete implementation of UserRepository using a PostgreSQL database
+type UserRepositoryImpl struct {
 	db *sql.DB
 }
 
-func NewUserRepository(db *sql.DB) *UserRepository {
-	return &UserRepository{db: db}
+// NewUserRepository creates a new UserRepository implementation
+func NewUserRepository(db *sql.DB) UserRepository {
+	return &UserRepositoryImpl{db: db}
 }
 
-func (repo *UserRepository) GetAllUsers() ([]models.User, error) {
+// GetAllUsers retrieves all users from the database
+func (repo *UserRepositoryImpl) GetAllUsers() ([]models.User, error) {
 	rows, err := repo.db.Query("SELECT id, first_name, last_name, email, status, time_created, time_modified FROM users")
 	if err != nil {
 		return nil, err
