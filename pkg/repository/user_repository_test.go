@@ -85,7 +85,7 @@ func TestUserRepository_GetAllUsers_ScanError(t *testing.T) {
 
 	// Simulate a scan error by creating rows with an incorrect number of columns
 	rows := sqlmock.NewRows([]string{"id", "first_name"}). // Missing other columns
-		AddRow("invalid-uuid", "John")
+								AddRow("invalid-uuid", "John")
 	mock.ExpectQuery("SELECT id, first_name, last_name, email, status, time_created, time_modified FROM users").
 		WillReturnRows(rows)
 
