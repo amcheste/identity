@@ -1,9 +1,9 @@
-name: Go
+name: Go CI
 
 on: [push]
 
 jobs:
-  build:
+  Build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -24,3 +24,11 @@ jobs:
 
       - name: Unit Test
         run: make unit
+
+  Docker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
