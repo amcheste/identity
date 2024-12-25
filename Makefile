@@ -6,7 +6,7 @@ LABEL   = $(shell git rev-parse --abbrev-ref HEAD)
 all: build test
 
 build:
-	CGO_ENABLED=0 GOOS=linux go build -o main cmd/api/main.go
+	CGO_ENABLED=0 GOOS=linux go build -x -o main cmd/api/main.go
 
 run:
 	go run cmd/api/main.go
@@ -26,12 +26,12 @@ unit:
 	go test -cover github.com/camphotos/identity/pkg/handlers
 
 integration:
-	go test github.com/camphotos/identity/integration
+	go test -v github.com/camphotos/identity/integration
 
 acceptance:
 	make start
 	sleep 1
-	go test github.com/camphotos/identity/acceptance
+	go test -v github.com/camphotos/identity/acceptance
 	make stop
 
 test: unit integration acceptance
