@@ -1,0 +1,7 @@
+name: Pull Request CI
+
+on: [push, workflow_call]
+
+jobs:
+  Build:
+    uses: amcheste/identity/.github/workflows/dev-ci.yml@init
