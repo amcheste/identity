@@ -1,7 +1,16 @@
 name: Pull Request CI
 
-on: [push, workflow_call]
+on: [push]
 
 jobs:
-  Build:
-    uses: amcheste/identity/.github/workflows/dev-ci.yml@init
+  Application:
+    uses: amcheste/identity/.github/workflows/build-app.yml@init
+  Integration:
+    needs: Application
+    uses: amcheste/identity/.github/workflows/integration-test.yml@init
+  Acceptance:
+    needs: Integration
+    uses: amcheste/identity/.github/workflows/acceptance-test.yml@init
+  Docker:
+    needs: Acceptance
+    uses: amcheste/identity/.github/workflows/build-docker.yml@init

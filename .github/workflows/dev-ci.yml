@@ -1,7 +1,5 @@
 name: Dev CI
 
-#on: [push, workflow_call]
-
 on: [push]
 
 jobs:
