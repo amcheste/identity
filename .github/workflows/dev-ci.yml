@@ -1,33 +1,12 @@
 name: Dev CI
 
-on: [push, workflow_call]
+#on: [push, workflow_call]
+
+on: [push]
 
 jobs:
-  Build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Go 1.23
-        uses: actions/setup-go@v5
-        with:
-          go-version: '1.23'
-      - name: Display Go version
-        run: go version
-      - name: Build
-        run: make build
-      - name: Unit Test
-        run: make unit
-
-#      - name: Integration Test
-#        run: make integration
-
-#      - name: Acceptance Test
-#        run: make acceptance
-
-#  Docker:
-#    runs-on: ubuntu-latest
-#    needs: Build
-#    steps:
-#      - uses: actions/checkout@v4
-#      - name: Build the Docker image
-#        run: docker build . --file Dockerfile --tag identity-api:$(date +%s)
+  Application:
+    uses: amcheste/identity/.github/workflows/build-app.yml@init
+  Docker:
+    needs: Application
+    uses: amcheste/identity/.github/workflows/build-docker.yml@init
