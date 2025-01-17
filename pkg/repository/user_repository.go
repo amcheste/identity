@@ -3,13 +3,15 @@ package repository
 import (
 	"database/sql"
 
-	"github.com/google/uuid"
 	"github.com/camphotos/identity/pkg/models"
+	"github.com/google/uuid"
 )
 
 // UserRepository defines the interface for user repository operations
 type UserRepository interface {
 	GetAllUsers() ([]models.User, error)
+	GetUserById(id string) (*models.User, error)
+	GetUserByEmail(email string) (*models.User, error)
 }
 
 // UserRepositoryImpl is a concrete implementation of UserRepository using a PostgreSQL database
@@ -46,4 +48,73 @@ func (repo *UserRepositoryImpl) GetAllUsers() ([]models.User, error) {
 	}
 
 	return users, nil
+}
+
+// GetUserByID retrieves a single user by their ID
+func (repo *UserRepositoryImpl) GetUserById(id string) (*models.User, error) {
+	query := `
+		SELECT id, first_name, last_name, email, status, time_created, time_modified 
+		FROM users 
+		WHERE id = $1
+	`
+
+	var user models.User
+	var userID string
+
+	err := repo.db.QueryRow(query, id).Scan(
+		&userID,
+		&user.FirstName,
+		&user.LastName,
+		&user.Email,
+		&user.Status,
+		&user.TimeCreated,
+		&user.TimeModified,
+	)
+
+	if err == sql.ErrNoRows {
+		return nil, err
+	} else if err != nil {
+		return nil, err
+	}
+
+	user.ID, err = uuid.Parse(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+func (repo *UserRepositoryImpl) GetUserByEmail(email string) (*models.User, error) {
+	query := `
+		SELECT id, first_name, last_name, email, status, time_created, time_modified 
+		FROM users 
+		WHERE email = $1
+	`
+
+	var user models.User
+	var id string
+
+	err := repo.db.QueryRow(query, email).Scan(
+		&id,
+		&user.FirstName,
+		&user.LastName,
+		&user.Email,
+		&user.Status,
+		&user.TimeCreated,
+		&user.TimeModified,
+	)
+
+	if err == sql.ErrNoRows {
+		return nil, err
+	} else if err != nil {
+		return nil, err
+	}
+
+	user.ID, err = uuid.Parse(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
 }

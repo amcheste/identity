@@ -23,8 +23,16 @@ func main() {
 
 	userRepo := repository.NewUserRepository(db)
 
-	http.HandleFunc("/v1/users", func(w http.ResponseWriter, r *http.Request) {
-		handlers.GetUsers(w, r, userRepo)
+	http.HandleFunc("GET /v1/users", func(w http.ResponseWriter, r *http.Request) {
+
+		if email := r.URL.Query().Get("email"); email != "" {
+			handlers.GetUserByEmailHandler(w, r, userRepo)
+		} else {
+			handlers.GetUsers(w, r, userRepo)
+		}
+	})
+	http.HandleFunc("GET /v1/users/{id}", func(w http.ResponseWriter, r *http.Request) {
+		handlers.GetUser(w, r, userRepo)
 	})
 
 	fmt.Println("Server listening on :8080")

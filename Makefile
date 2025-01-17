@@ -1,9 +1,9 @@
 PROGRAM = identity
 LABEL   = $(shell git rev-parse --abbrev-ref HEAD)
 
-.PHONY: build test unit integration acceptance
+.PHONY: build test unit integration acceptance clean
 
-all: build test
+all: build test clean
 
 build:
 	CGO_ENABLED=0 GOOS=linux go build -x -o main cmd/api/main.go
@@ -35,6 +35,9 @@ acceptance:
 	make stop
 
 test: unit integration acceptance
+
+clean:
+	rm main
 
 
 

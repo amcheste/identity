@@ -1,0 +1,249 @@
+openapi: 3.0.3
+info:
+  title: CAM Photos & Design Identity API
+  version: 0.0.1
+servers:
+  - url: https://petstore3.swagger.io/api/v3
+tags:
+  - name: user
+    description: User account operations
+paths:
+  /v1/users:
+    post:
+      tags:
+        - user
+      summary: Create a user account
+      description: Create's a new user account
+      requestBody:
+        description: User account input
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+      responses:
+        '201':
+          description: Successfully created new user account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid user account arguments
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: User account already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      tags:
+        - user
+      summary: Get user accounts
+      description: Returns user account information
+      parameters:
+        - name: username
+          in: query
+          description: User account username
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User account information
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '404':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /v1/users/{id}:
+    get:
+      tags:
+        - user
+      summary: Get user account information
+      description: Returns user account information based on an account ID
+      parameters:
+        - name: id
+          in: path
+          description: User account ID
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example:  b48e83a5-cb34-4db5-8ef3-a4423bebfe67
+      responses:
+        '200':
+          description: Successfully returned user information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User account not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+        - user
+      summary: Update user account
+      description: Updates a user account information
+      parameters:
+        - name: id
+          in: path
+          description: User account ID
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example:  b48e83a5-cb34-4db5-8ef3-a4423bebfe67
+      requestBody:
+        description: User account input
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+      responses:
+        '200':
+          description: Successfully updated new user account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid user account arguments
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: User account not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - user
+      summary: Delete user account
+      description: Deletes user account
+      parameters:
+        - name: id
+          in: path
+          description: User account ID
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example:  b48e83a5-cb34-4db5-8ef3-a4423bebfe67
+      responses:
+        '204':
+          description: Successfully deleting user account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User account not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+    UserInput:
+      type: object
+      properties:
+        username:
+          type: string
+          example: foo_bar
+        first_name:
+          type: string
+          example: Foo
+        last_name:
+          type: string
+          example: Bar
+        email:
+          type: string
+          format: email
+          example: foo.bar@mail.com
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: b48e83a5-cb34-4db5-8ef3-a4423bebfe67
+        username:
+          type: string
+          example: foo_bar
+        first_name:
+          type: string
+          example: Foo
+        last_name:
+          type: string
+          example: Bar
+        email:
+          type: string
+          format: email
+          example: foo.bar@mail.com
+        status:
+          type: string
+          enum:
+            - ACTIVE
+            - IN_ACTIVE
+        time_created:
+          type: string
+          format: date-time
+          example: 2025-01-14T01:40:45Z
+        time_modified:
+          type: string
+          format: date-time
+          example: 2025-01-14T01:40:45Z
