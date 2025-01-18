@@ -3,15 +3,15 @@ info:
   title: CAM Photos & Design Identity API
   version: 0.0.1
 servers:
-  - url: https://petstore3.swagger.io/api/v3
+  - url: http://localhost:8080
 tags:
-  - name: user
-    description: User account operations
+  - name: IAM
+    description: Identity & Access Management
 paths:
   /v1/users:
     post:
       tags:
-        - user
+        - IAM
       summary: Create a user account
       description: Create's a new user account
       requestBody:
@@ -47,7 +47,7 @@ paths:
                 $ref: '#/components/schemas/Error'
     get:
       tags:
-        - user
+        - IAM
       summary: Get user accounts
       description: Returns user account information
       parameters:
@@ -82,7 +82,7 @@ paths:
   /v1/users/{id}:
     get:
       tags:
-        - user
+        - IAM
       summary: Get user account information
       description: Returns user account information based on an account ID
       parameters:
@@ -115,7 +115,7 @@ paths:
                 $ref: '#/components/schemas/Error'
     put:
       tags:
-        - user
+        - IAM
       summary: Update user account
       description: Updates a user account information
       parameters:
@@ -152,6 +152,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        '409':
+          description: Invalid user information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '500':
           description: Internal server error
           content:
@@ -160,7 +166,7 @@ paths:
                 $ref: '#/components/schemas/Error'
     delete:
       tags:
-        - user
+        - IAM
       summary: Delete user account
       description: Deletes user account
       parameters:
@@ -181,6 +187,339 @@ paths:
                 $ref: '#/components/schemas/User'
         '404':
           description: User account not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/roles:
+    post:
+      tags:
+        - IAM
+      summary: Create new role
+      description: Create a new role
+      requestBody:
+        description: Role information
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleInput'
+      responses:
+        '201':
+          description: Successfully created role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        '400':
+          description: Invalid role arguments
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Role already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      tags:
+        - IAM
+      summary: Get Role
+      description: Returns role information
+      responses:
+        '200':
+          description: Role information
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Role'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/roles/{id}:
+    get:
+      tags:
+        - IAM
+      summary: Returns roles
+      description: Returns list of roles
+      parameters:
+        - name: id
+          in: path
+          description: Role ID
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example:  b48e83a5-cb34-4db5-8ef3-a4423bebfe67
+      responses:
+        '200':
+          description: Role information
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Role'
+        '404':
+          description: Role not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+        - IAM
+      summary: Update role
+      description: Updates role information
+      parameters:
+        - name: id
+          in: path
+          description: Role ID
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example:  b48e83a5-cb34-4db5-8ef3-a4423bebfe67
+      requestBody:
+        description: Role information
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleInput'
+      responses:
+        '200':
+          description: Role information
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Role'
+        '404':
+          description: Role account not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Role already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - IAM
+      summary: Delete role
+      description: Deletes a role
+      parameters:
+        - name: id
+          in: path
+          description: Role ID
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example:  b48e83a5-cb34-4db5-8ef3-a4423bebfe67
+      responses:
+        '204':
+          description: Successfully deleting role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: Role not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/permissions:
+    post:
+      tags:
+        - IAM
+      summary: Create a new permission
+      description: Create a new permission
+      requestBody:
+        description: Permission information
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PermissionInput'
+      responses:
+        '201':
+          description: Successfully created permission
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permission'
+        '400':
+          description: Invalid permission arguments
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Permission already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      tags:
+        - IAM
+      summary: Get permissions
+      description: Returns permission information
+      responses:
+        '200':
+          description: Successfully return permission information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permission'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/permissions/{id}:
+    get:
+      tags:
+        - IAM
+      summary: Get permission
+      description: Returns list of permissions
+      parameters:
+        - name: id
+          in: path
+          description: Permission ID
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example:  b48e83a5-cb34-4db5-8ef3-a4423bebfe67
+      responses:
+        '200':
+          description: Successfully return permission information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permission'
+        '404':
+          description: Permission not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+        - IAM
+      summary: Update permission
+      description: Updates permission information
+      parameters:
+        - name: id
+          in: path
+          description: Permission ID
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example:  b48e83a5-cb34-4db5-8ef3-a4423bebfe67
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PermissionInput'
+      responses:
+        '200':
+          description: Successfully updated permission information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permission'
+        '404':
+          description: Permission not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - IAM
+      summary: Delete permission
+      description: Deletes permission
+      parameters:
+        - name: id
+          in: path
+          description: Parameter ID
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example:  b48e83a5-cb34-4db5-8ef3-a4423bebfe67
+      responses:
+        '204':
+          description: Successfully deleted permission
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: Permission not found
           content:
             application/json:
               schema:
@@ -239,6 +578,103 @@ components:
           enum:
             - ACTIVE
             - IN_ACTIVE
+        time_created:
+          type: string
+          format: date-time
+          example: 2025-01-14T01:40:45Z
+        time_modified:
+          type: string
+          format: date-time
+          example: 2025-01-14T01:40:45Z
+    RoleInput:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Admins
+        description:
+          type: string
+          description: NAS Administrators
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+    Role:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: b48e83a5-cb34-4db5-8ef3-a4423bebfe67
+        name:
+          type: string
+          example: Admins
+        description:
+          type: string
+          description: NAS Administrators
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+        status:
+          type: string
+          enum:
+            - ACTIVE
+            - DELETED
+        time_created:
+          type: string
+          format: date-time
+          example: 2025-01-14T01:40:45Z
+        time_modified:
+          type: string
+          format: date-time
+          example: 2025-01-14T01:40:45Z
+    PermissionInput:
+      type: object
+      properties:
+        description:
+          type: string
+          example: Permission description
+        service:
+          type: string
+          example: NAS
+        resource:
+          type: string
+          example: media
+        action:
+          enum:
+            - CREATE
+            - READ
+            - UPDATE
+            - DELETE
+            - LIST
+    Permission:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: b48e83a5-cb34-4db5-8ef3-a4423bebfe67
+        description:
+          type: string
+          example: Permission description
+        service:
+          type: string
+          example: NAS
+        resource:
+          type: string
+          example: media
+        action:
+          enum:
+            - CREATE
+            - READ
+            - UPDATE
+            - DELETE
+            - LIST
+        status:
+          enum:
+            - ACTIVE
+            - DELETED
         time_created:
           type: string
           format: date-time
