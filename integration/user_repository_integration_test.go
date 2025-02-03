@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"github.com/camphotos/identity/pkg/models"
 	"github.com/camphotos/identity/pkg/repository"
 	"testing"
 
@@ -103,6 +104,45 @@ func TestUserRepository_GetAllUsers(t *testing.T) {
 		}
 	}
 
+}
+
+func TestUserRepository_GetUserById(t *testing.T) {
+	// Setup container and clean up afterward
+	db, cleanup := setupTestContainer(t)
+	defer cleanup()
+
+	// Run database setup
+	setupDatabase(t, db)
+
+	// Insert test data
+	if _, err := db.Exec(`INSERT INTO users (id, first_name, last_name, email) VALUES 
+		('11111111-1111-1111-1111-111111111111', 'John', 'Doe', 'johndoe@mail.com');`); err != nil {
+		t.Fatalf("Failed to insert test data: %v", err)
+	}
+
+	// Initialize repository
+	repo := repository.NewUserRepository(db)
+
+	// Test GetAllUsers
+	user, err := repo.GetUserById("11111111-1111-1111-1111-111111111111")
+	if err != nil {
+		t.Fatalf("Error fetching users: %v", err)
+	}
+	userId := "11111111-1111-1111-1111-111111111111"
+	if user.ID.String() != userId {
+		t.Fatalf("Error fetching users: %v", err)
+	}
+
+	if user.FirstName != "John" {
+		t.Fatalf("Error fetching users: %v", err)
+	}
+	if user.LastName != "Doe" {
+		t.Fatalf("Error fetching users: %v", err)
+	}
+
+	if user.Status != models.Active {
+		t.Fatalf("Error fetching users: %v", err)
+	}
 }
 
 func setupDatabase(t *testing.T, db *sql.DB) {
